@@ -11,7 +11,7 @@ client.on("message", message => {
     let roll;
     if (!isNaN(messageContent[1]))
       roll = Math.floor(Math.random() * parseInt(messageContent[1])) + 1;
-    else roll = Math.floor(Math.random() * 10) + 1;
+    else roll = Math.floor(Math.random() * 100) + 1;
     message.channel.send(`${message.author.username} rolled ${roll}`);
   }
 });
