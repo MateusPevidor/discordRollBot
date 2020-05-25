@@ -2,8 +2,15 @@ const Discord = require("discord.js");
 require("dotenv/config");
 
 const client = new Discord.Client();
+// client.user.setPresence({
+//   status: {
 
-client.login(process.env.BOT_TOKEN);
+//   }
+// })
+
+
+// client.login(process.env.BOT_TOKEN);
+client.login('NjExMzU4MDYwMjI4OTAyOTQy.XVjJNg.1LXGta3JWiirjdP18HsuMCiGdiM');
 
 client.on("message", message => {
   if (message.content.startsWith("!>roll")) {
@@ -14,13 +21,18 @@ client.on("message", message => {
     else roll = Math.floor(Math.random() * 10) + 1;
     message.channel.send(`${message.author.username} rolled ${roll}`);
   }
+
+  if (message.content.startsWith("!>porquebuduga?")) {
+    message.channel.send(`pq me kiko buduga :(`);
+  }
 });
 
 client.on('ready', () => {
   client.user.setPresence({
     game: {
-      name: '!>roll',
-      type: "PLAYING",
+        name: '!>roll',
+        type: "PLAYING",
     }
-  });
+});
+
 })
