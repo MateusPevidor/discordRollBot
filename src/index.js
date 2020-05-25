@@ -2,15 +2,8 @@ const Discord = require("discord.js");
 require("dotenv/config");
 
 const client = new Discord.Client();
-// client.user.setPresence({
-//   status: {
 
-//   }
-// })
-
-
-// client.login(process.env.BOT_TOKEN);
-client.login('NjExMzU4MDYwMjI4OTAyOTQy.XVjJNg.1LXGta3JWiirjdP18HsuMCiGdiM');
+client.login(process.env.BOT_TOKEN);
 
 client.on("message", message => {
   if (message.content.startsWith("!>roll")) {
@@ -30,9 +23,8 @@ client.on("message", message => {
 client.on('ready', () => {
   client.user.setPresence({
     game: {
-        name: '!>roll',
-        type: "PLAYING",
+      name: '!>roll',
+      type: "PLAYING",
     }
+  });
 });
-
-})
