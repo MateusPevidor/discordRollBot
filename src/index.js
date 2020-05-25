@@ -15,3 +15,12 @@ client.on("message", message => {
     message.channel.send(`${message.author.username} rolled ${roll}`);
   }
 });
+
+client.on('ready', () => {
+  client.user.setPresence({
+    game: {
+      name: '!>roll',
+      type: "PLAYING",
+    }
+  });
+})
