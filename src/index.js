@@ -1,5 +1,6 @@
-const Discord = require("discord.js");
 require("dotenv/config");
+const Discord = require("discord.js");
+const weatherApi = require('./weatherApi');
 
 const client = new Discord.Client();
 
@@ -17,6 +18,23 @@ client.on("message", message => {
 
   if (message.content.startsWith("!>porquebuduga?")) {
     message.channel.send(`pq me kiko buduga :(`);
+  }
+
+  if (message.content.startsWith('!>temp')) {
+    const content = message.content;
+    const city = content.substr(content.indexOf(" ") + 1, content.length - content.indexOf(" "));
+    weatherApi.get('', {
+      params: {
+        query: city,
+      }
+    }).then(response => {
+      const temperature = response.data.current.temperature;
+      const city = response.data.location.name;
+      message.channel.send(`<@${message.author.id}>, temperatura em **${city}**: ${temperature}°`);
+    }).catch(err => {
+      console.log(err);
+      message.channel.send(`Ocorreu algum erro 😯`);
+    });
   }
 });
 
