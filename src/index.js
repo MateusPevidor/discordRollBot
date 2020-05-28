@@ -48,10 +48,21 @@ client.on("message", async message => {
 });
 
 client.on('ready', () => {
-  client.user.setPresence({
-    game: {
-      name: '!>roll',
-      type: "PLAYING",
-    }
-  });
+  const status = [
+    '!>temp',
+    '!>roll',
+  ];
+  let counter = 0;
+
+  function setPresence() {
+    client.user.setPresence({
+      game: {
+        name: status[counter % status.length],
+        type: "PLAYING",
+      }
+    });
+    counter++;
+  }
+
+  setInterval(setPresence, 1800000);
 });
