@@ -1,7 +1,7 @@
 require("dotenv/config");
 
 const Discord = require("discord.js");
-const { weatherstack, weather_com } = require('./weatherApi');
+const { weather_com } = require('./weatherApi');
 
 const client = new Discord.Client();
 
@@ -27,22 +27,22 @@ client.on("message", async message => {
     let lat, lon;
 
     try {
-      const response = await weatherstack.get('', {
+      const response = await weather_com.weather_com_location.get('', {
         params: {
           query: city,
         }
       });
 
-      city = response.data.location.name;
-      lat = response.data.location.lat;
-      lon = response.data.location.lon;
+      city = response.data.location.city[0];
+      lat = response.data.location.latitude[0];
+      lon = response.data.location.longitude[0];
     } catch (err) {
       console.log(err);
       return message.channel.send(`Ocorreu algum erro 😯`);
     }
 
     try {
-      const response = await weather_com.get('', {
+      const response = await weather_com.weather_com_temperature.get('', {
         params: {
           geocode: `${lat},${lon}`,
         }
