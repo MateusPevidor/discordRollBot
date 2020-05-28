@@ -26,24 +26,34 @@ client.on("message", async message => {
     let city = content.substr(content.indexOf(" ") + 1, content.length - content.indexOf(" "));
     let lat, lon;
 
-    let response = await weatherstack.get('', {
-      params: {
-        query: city,
-      }
-    });
+    try {
+      const response = await weatherstack.get('', {
+        params: {
+          query: city,
+        }
+      });
 
-    city = response.data.location.name;
-    lat = response.data.location.lat;
-    lon = response.data.location.lon;
+      city = response.data.location.name;
+      lat = response.data.location.lat;
+      lon = response.data.location.lon;
+    } catch (err) {
+      console.log(err);
+      return message.channel.send(`Ocorreu algum erro 😯`);
+    }
 
-    response = await weather_com.get('', {
-      params: {
-        geocode: `${lat},${lon}`,
-      }
-    });
+    try {
+      const response = await weather_com.get('', {
+        params: {
+          geocode: `${lat},${lon}`,
+        }
+      });
 
-    const temperature = response.data.temperature;
-    message.channel.send(`<@${message.author.id}>, temperatura em **${city}**: ${temperature}°`);
+      const temperature = response.data.temperature;
+      return message.channel.send(`<@${message.author.id}>, temperatura em **${city}**: ${temperature}°`);
+    } catch (err) {
+      console.log(err);
+      return message.channel.send(`Ocorreu algum erro 😯`);
+    }
   }
 });
 
