@@ -1,12 +1,13 @@
 require("dotenv/config");
+
 const Discord = require("discord.js");
-const weatherApi = require('./weatherApi');
+const { weatherstack, weather_com } = require('./weatherApi');
 
 const client = new Discord.Client();
 
 client.login(process.env.BOT_TOKEN);
 
-client.on("message", message => {
+client.on("message", async message => {
   if (message.content.startsWith("!>roll")) {
     let messageContent = message.content.split(" ");
     let roll;
@@ -22,19 +23,27 @@ client.on("message", message => {
 
   if (message.content.startsWith('!>temp')) {
     const content = message.content;
-    const city = content.substr(content.indexOf(" ") + 1, content.length - content.indexOf(" "));
-    weatherApi.get('', {
+    let city = content.substr(content.indexOf(" ") + 1, content.length - content.indexOf(" "));
+    let lat, lon;
+
+    let response = await weatherstack.get('', {
       params: {
         query: city,
       }
-    }).then(response => {
-      const temperature = response.data.current.temperature;
-      const city = response.data.location.name;
-      message.channel.send(`<@${message.author.id}>, temperatura em **${city}**: ${temperature}°`);
-    }).catch(err => {
-      console.log(err);
-      message.channel.send(`Ocorreu algum erro 😯`);
     });
+
+    city = response.data.location.name;
+    lat = response.data.location.lat;
+    lon = response.data.location.lon;
+
+    response = await weather_com.get('', {
+      params: {
+        geocode: `${lat},${lon}`,
+      }
+    });
+
+    const temperature = response.data.temperature;
+    message.channel.send(`<@${message.author.id}>, temperatura em **${city}**: ${temperature}°`);
   }
 });
 
