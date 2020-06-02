@@ -21,19 +21,57 @@ client.on("message", async message => {
     message.channel.send(`pq me kiko buduga :(`);
   }
 
-  if (message.content.startsWith('!>temp')) {
+  if (message.content.startsWith('!>temd')) {
     const content = message.content;
     let city = content.substr(content.indexOf(" ") + 1, content.length - content.indexOf(" "));
-    let lat, lon;
+    let lat, lon, isNeighborhood = false, showAll = false;
 
+    if (city.includes('-show')) {
+      city = city.replace('-show', '');
+      showAll = true;
+    }
+
+    if (city.includes('-b')) {
+      city = city.replace('-b', '');
+      isNeighborhood = true;
+    }
+
+    if (city.includes('-help')) {
+      const embed = new Discord.RichEmbed()
+        .setTitle(`[${message.author.username}] Temperature Options`)
+        .setColor(0xfefefe)
+        .setDescription(`
+          Usage: \`\`!>temp <name> [...flags]\`\`
+          \`\`\`Flags:
+  -b: Sets location type to neighborhood instead of default (city)
+  -show: Shows all possible locations
+  -help: Shows this message\`\`\`
+        `);
+      return message.channel.send({ embed });
+    }
+    
     try {
       const response = await weather_com.weather_com_location.get('', {
         params: {
-          query: city,
+          query: city.trim(),
+          locationType: isNeighborhood ? 'neighborhood' : 'city',
         }
       });
 
-      city = response.data.location.city[0];
+      if (showAll) {
+        let locations = '';
+        response.data.location.address.forEach((address, i) => {
+          locations += `${i + 1}. ${address}\n`;
+        });
+
+        const embed = new Discord.RichEmbed()
+          .setTitle(`[${city.trim()}] Locations`)
+          .setColor(0xfefefe)
+          .setDescription(locations);
+        return message.channel.send({ embed });
+      }
+
+      city = response.data.location.address[0];
       lat = response.data.location.latitude[0];
       lon = response.data.location.longitude[0];
     } catch (err) {
