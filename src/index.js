@@ -112,5 +112,5 @@ client.on('ready', () => {
     counter++;
   }
 
-  setInterval(setPresence, 1800000);
+  setInterval(setPresence, 180000);
 });
