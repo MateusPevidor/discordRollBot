@@ -15,7 +15,7 @@ const weather_com_location = axios.create({
   params: {
     apiKey: process.env.WEATHERCOM_APIKEY,
     format: 'json',
-    language: 'en-US',
+    language: 'pt-BR',
     locationType: 'city',
   }
 });
