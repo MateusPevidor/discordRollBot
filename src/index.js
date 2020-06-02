@@ -8,7 +8,7 @@ const client = new Discord.Client();
 client.login(process.env.BOT_TOKEN);
 
 client.on("message", async message => {
-  if (message.content.startsWith("!>roll")) {
+  if (message.content.startsWith("$roll")) {
     let messageContent = message.content.split(" ");
     let roll;
     if (!isNaN(messageContent[1]))
@@ -17,11 +17,11 @@ client.on("message", async message => {
     message.channel.send(`${message.author.username} rolled ${roll}`);
   }
 
-  if (message.content.startsWith("!>porquebuduga?")) {
+  if (message.content.startsWith("$porquebuduga?")) {
     message.channel.send(`pq me kiko buduga :(`);
   }
 
-  if (message.content.startsWith('!>temp')) {
+  if (message.content.startsWith('$temp')) {
     const content = message.content;
     let city = content.substr(content.indexOf(" ") + 1, content.length - content.indexOf(" "));
     let lat, lon, isNeighborhood = false, showAll = false;
@@ -41,7 +41,7 @@ client.on("message", async message => {
         .setTitle(`[${message.author.username}] Temperature Options`)
         .setColor(0xfefefe)
         .setDescription(`
-          Usage: \`\`!>temp <name> [...flags]\`\`
+          Usage: \`\`$temp <name> [...flags]\`\`
           \`\`\`Flags:
   -b: Sets location type to neighborhood instead of default (city)
   -show: Shows all possible locations
@@ -97,8 +97,8 @@ client.on("message", async message => {
 
 client.on('ready', () => {
   const status = [
-    '!>temp',
-    '!>roll',
+    '$temp',
+    '$roll',
   ];
   let counter = 0;
 
