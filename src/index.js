@@ -21,7 +21,7 @@ client.on("message", async message => {
     message.channel.send(`pq me kiko buduga :(`);
   }
 
-  if (message.content.startsWith('!>temd')) {
+  if (message.content.startsWith('!>temp')) {
     const content = message.content;
     let city = content.substr(content.indexOf(" ") + 1, content.length - content.indexOf(" "));
     let lat, lon, isNeighborhood = false, showAll = false;
