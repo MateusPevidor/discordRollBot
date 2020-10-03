@@ -635,6 +635,11 @@ has-values@^1.0.0:
     is-number "^3.0.0"
     kind-of "^4.0.0"
 
+hsl-to-rgb-for-reals@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/hsl-to-rgb-for-reals/-/hsl-to-rgb-for-reals-1.1.1.tgz#e1eb23f6b78016e3722431df68197e6dcdc016d9"
+  integrity sha512-LgOWAkrN0rFaQpfdWBQlv/VhkOxb5AsBjk6NQVx4yEzWS923T07X0M1Y0VNko2H52HeSpZrZNNMJ0aFqsdVzQg==
+
 iconv-lite@^0.4.4:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"

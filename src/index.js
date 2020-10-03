@@ -1,13 +1,14 @@
 require("dotenv/config");
 
 const Discord = require("discord.js");
-const { weather_com } = require('./weatherApi');
+const { weather_com } = require("./weatherApi");
+const { temperatureToColor, parseWxPhrase } = require("./utils/utils");
 
 const client = new Discord.Client();
 
 client.login(process.env.BOT_TOKEN);
 
-client.on("message", async message => {
+client.on("message", async (message) => {
   if (message.content.startsWith("$roll")) {
     let messageContent = message.content.split(" ");
     let roll;
@@ -21,26 +22,55 @@ client.on("message", async message => {
     message.channel.send(`pq me kiko buduga :(`);
   }
 
-  if (message.content.startsWith('$temp')) {
-    const content = message.content;
-    let city = content.substr(content.indexOf(" ") + 1, content.length - content.indexOf(" "));
-    let lat, lon, isNeighborhood = false, showAll = false;
+  if (message.content.startsWith("$dev")) {
+    const embed = new Discord.RichEmbed()
+      .setTitle(`🧭 Contagem, Minas Gerais, Brasil`)
+      .setColor(temperatureToColor(36))
+      .setAuthor("Floaddy", message.author.avatarURL)
+      .setThumbnail("https://ssl.gstatic.com/onebox/weather/64/cloudy.png")
+      .addField("Temperatura", "🌡️ 36ºC", true)
+      .addField("Sensação Térmica", "🌡️ 39ºC", true)
+      .addField("Umidade", "💧 78%")
+      .addBlankField()
+      .setTimestamp()
+      .setFooter(
+        "weather.com",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/The_Weather_Channel_logo_2005-present.svg/200px-The_Weather_Channel_logo_2005-present.svg.png"
+      );
+    return message.channel.send({ embed });
+  }
 
-    if (city.includes('-show')) {
-      city = city.replace('-show', '');
+  if (message.content.startsWith("$temp")) {
+    const content = message.content;
+    let city = content.substr(
+      content.indexOf(" ") + 1,
+      content.length - content.indexOf(" ")
+    );
+    let lat,
+      lon,
+      isNeighborhood = false,
+      showAll = false,
+      minified = false;
+
+    if (city.includes("-show")) {
+      city = city.replace("-show", "");
       showAll = true;
     }
 
-    if (city.includes('-b')) {
-      city = city.replace('-b', '');
+    if (city.includes("-min")) {
+      city = city.replace("-min", "");
+      minified = true;
+    }
+
+    if (city.includes("-b")) {
+      city = city.replace("-b", "");
       isNeighborhood = true;
     }
 
-    if (city.includes('-help')) {
+    if (city.includes("-help")) {
       const embed = new Discord.RichEmbed()
         .setTitle(`[${message.author.username}] Temperature Options`)
-        .setColor(0xfefefe)
-        .setDescription(`
+        .setColor(0xfefefe).setDescription(`
           Usage: \`\`$temp <name> [...flags]\`\`
           \`\`\`Flags:
   -b: Sets location type to neighborhood instead of default (city)
@@ -49,17 +79,17 @@ client.on("message", async message => {
         `);
       return message.channel.send({ embed });
     }
-    
+
     try {
-      const response = await weather_com.weather_com_location.get('', {
+      const response = await weather_com.weather_com_location.get("", {
         params: {
           query: city.trim(),
-          locationType: isNeighborhood ? 'neighborhood' : 'city',
-        }
+          locationType: isNeighborhood ? "neighborhood" : "city",
+        },
       });
 
       if (showAll) {
-        let locations = '';
+        let locations = "";
         response.data.location.address.forEach((address, i) => {
           locations += `${i + 1}. ${address}\n`;
         });
@@ -80,14 +110,41 @@ client.on("message", async message => {
     }
 
     try {
-      const response = await weather_com.weather_com_temperature.get('', {
+      const response = await weather_com.weather_com_temperature.get("", {
         params: {
           geocode: `${lat},${lon}`,
-        }
+        },
       });
 
-      const temperature = response.data.temperature;
-      return message.channel.send(`<@${message.author.id}>, temperatura em **${city}**: ${temperature}°`);
+      const {
+        temperature,
+        temperatureFeelsLike,
+        relativeHumidity,
+      } = response.data;
+
+      if (minified) {
+        return message.channel.send(
+          `<@${message.author.id}>, temperatura em **${city}**: ${temperature}°`
+        );
+      } else {
+        const embed = new Discord.RichEmbed()
+          .setTitle(`🧭 ${city}`)
+          .setColor(temperatureToColor(temperature))
+          .setAuthor(`${message.author.username}`, message.author.avatarURL)
+          .setThumbnail(
+            "https://i.pinimg.com/originals/0e/f3/bb/0ef3bb66d9216fffcea9022628f7bb26.gif"
+          )
+          .addField("Temperatura", `🌡️ ${temperature}ºC`, true)
+          .addField("Sensação Térmica", `🌡️ ${temperatureFeelsLike}ºC`, true)
+          .addField("Umidade", `💧 ${relativeHumidity}%`)
+          .addBlankField()
+          .setTimestamp()
+          .setFooter(
+            "weather.com",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/The_Weather_Channel_logo_2005-present.svg/200px-The_Weather_Channel_logo_2005-present.svg.png"
+          );
+        return message.channel.send({ embed });
+      }
     } catch (err) {
       console.log(err);
       return message.channel.send(`Ocorreu algum erro 😯`);
@@ -95,11 +152,8 @@ client.on("message", async message => {
   }
 });
 
-client.on('ready', () => {
-  const status = [
-    '$temp',
-    '$roll',
-  ];
+client.on("ready", () => {
+  const status = ["$temp", "$roll"];
   let counter = 0;
 
   function setPresence() {
@@ -107,7 +161,7 @@ client.on('ready', () => {
       game: {
         name: status[counter % status.length],
         type: "PLAYING",
-      }
+      },
     });
     counter++;
   }
