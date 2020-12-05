@@ -181,14 +181,14 @@ app.use(express.json());
 let ip;
 let time;
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   return res.json({
     ip: ip || 'Unset',
     time: time || 'Unset'
   });
 });
 
-app.post("/", (req, res) => {
+app.post("/api", (req, res) => {
   const newIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   ip = newIP;
   time = new Date();
