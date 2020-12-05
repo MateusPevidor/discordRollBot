@@ -168,3 +168,33 @@ client.on("ready", () => {
 
   setInterval(setPresence, 180000);
 });
+
+// ---------------------------------------------------- //
+
+const express = require('express');
+const app = express();
+
+const port = process.env.PORT || 3333;
+
+app.use(express.json());
+
+let ip;
+let time;
+
+app.get("/", (req, res) => {
+  return res.json({
+    ip: ip || 'Unset',
+    time: time || 'Unset'
+  });
+});
+
+app.post("/", (req, res) => {
+  const newIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  ip = newIP;
+  time = new Date();
+  return res.json({
+    message: `The IP has been updated to ${ip}`,
+  });
+});
+
+app.listen(port, () => console.log(`[INFO] App is running on port ${port}.`));
