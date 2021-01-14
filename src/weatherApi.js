@@ -1,28 +1,13 @@
 const axios = require('axios').default;
 
-const weather_com_temperature = axios.create({
-  baseURL: 'https://api.weather.com/v3/wx/observations/current',
+const api = axios.create({
+  baseURL: 'https://api.openweathermap.org/data/2.5/weather',
   params: {
-    apiKey: process.env.WEATHERCOM_APIKEY,
-    format: 'json',
-    language: 'en-US',
-    units: 'm',
-  }
-});
-
-const weather_com_location = axios.create({
-  baseURL: 'https://api.weather.com/v3/location/search',
-  params: {
-    apiKey: process.env.WEATHERCOM_APIKEY,
-    format: 'json',
-    language: 'pt-BR',
-    locationType: 'city',
+    appid: process.env.OPENWEATHERMAP_APIKEY,
+    units: 'metric',
   }
 });
 
 module.exports = {
-  weather_com: {
-    weather_com_temperature,
-    weather_com_location,
-  }
+  api
 };
