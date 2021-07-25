@@ -107,3 +107,27 @@ client.on("ready", () => {
 
   setInterval(setPresence, 180000);
 });
+
+// ---------------- // this code omg kms
+
+const express = require('express');
+
+const app = express();
+
+const PORT = process.env.PORT || 3333;
+
+app.get('/api', async (req, res) => {
+  const city = req.query.city;
+
+  const response = await api.get("", {
+    params: {
+      q: city,
+    },
+  });
+
+  res.json(response.data);
+});
+
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+});
