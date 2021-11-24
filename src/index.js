@@ -4,6 +4,8 @@ const Discord = require("discord.js");
 const { api } = require("./weatherApi");
 const { temperatureToColor } = require("./utils/utils");
 
+const CMCApi = require("./coinMarketCapApi");
+
 const client = new Discord.Client();
 
 client.login(process.env.BOT_TOKEN);
@@ -86,6 +88,48 @@ client.on("message", async (message) => {
       console.log(err);
       let text = `Ocorreu algum erro 😯`;
       if (err.response.status == 404) text = "Cidade não encontrada";
+      return message.channel.send(text);
+    }
+  }
+
+  if (message.content.startsWith("$coin")) {
+    const { content } = message;
+    const coinName = content.split(" ")[1];
+
+    try {
+      const coinInfo = await CMCApi.query(coinName);
+
+      const embed = new Discord.RichEmbed()
+        .setTitle(`💰 $${coinInfo.price}`)
+        .setColor(0xececec)
+        .setAuthor(`${coinInfo.symbol} - ${coinInfo.name}`, `https://s2.coinmarketcap.com/static/img/coins/64x64/${coinInfo.id}.png`)
+        .setThumbnail(
+          `https://s2.coinmarketcap.com/static/img/coins/64x64/${coinInfo.id}.png`
+        )
+        .addField("Max supply", `${coinInfo.maxSupply}`, true)
+        .addField("Circulating supply", `${coinInfo.circulatingSupply}`, true)
+        .addField("Total supply", `${coinInfo.totalSupply}`, true)
+        .addField("1h", `${coinInfo.change[0]}`, true)
+        .addField("24h", `${coinInfo.change[1]}`, true)
+        .addField("7d", `${coinInfo.change[2]}`, true)
+        .addField("30d", `${coinInfo.change[3]}`, true)
+        .addField("60d", `${coinInfo.change[4]}`, true)
+        .addField("90d", `${coinInfo.change[5]}`, true)
+        .addField("Market cap", `${coinInfo.marketCap}`, true)
+        .addField("Market dominance", `${coinInfo.marketCapDominance}`, true)
+        .addField("Diluted market cap", `${coinInfo.marketCapDiluted}`, true)
+        .addBlankField()
+        .addField("Added at", `${coinInfo.addedDate}`, true)
+        .addField("Updated at", `${coinInfo.updatedDate}`, true)
+        .setTimestamp()
+        .setFooter(
+          "coinmarketcap.com",
+          "https://c.tenor.com/OT750eWlhoQAAAAC/cmc-coinmarketcap.gif"
+        );
+      return message.channel.send({ embed });
+    } catch (err) {
+      console.log(err);
+      let text = `Ocorreu algum erro 😯`;
       return message.channel.send(text);
     }
   }

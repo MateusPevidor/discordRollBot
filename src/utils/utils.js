@@ -16,7 +16,17 @@ const temperatureToColor = (temperature) => {
   return value;
 };
 
+const formatNumber = (number, precision = 2) => {
+  const numberFormatter = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: precision,
+    maximumFractionDigits: precision,
+  });
+
+  return numberFormatter.format(number);
+}
+
 module.exports = {
   parseWxPhrase,
   temperatureToColor,
+  formatNumber,
 };
