@@ -1,4 +1,4 @@
-FROM arm64v8/node
+FROM node:latest
 
 WORKDIR /usr/src/discord-bot
 
