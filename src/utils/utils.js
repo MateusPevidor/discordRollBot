@@ -1,4 +1,4 @@
-const converter = require("hsl-to-rgb-for-reals");
+const converter = require('hsl-to-rgb-for-reals');
 
 const parseWxPhrase = (phrase) => {
   return phrase.toLowerCase().replace(/ /, "_");
